@@ -8,6 +8,7 @@ import { DatabaseModule } from './database/database.module';
 import { BlogModule } from './blog/blog.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { MyLoggerModule } from './my-logger/my-logger.module';
 
 @Module({
   imports: [
@@ -18,10 +19,17 @@ import { APP_GUARD } from '@nestjs/core';
     BlogModule,
     ThrottlerModule.forRoot([
       {
-        ttl: 60000,
+        name: 'short',
+        ttl: 1000, // 3 requests limit in one  second
         limit: 3,
       },
+      {
+        name: 'long',
+        ttl: 60000, // 100 request limit in one minute
+        limit: 100,
+      },
     ]),
+    MyLoggerModule,
   ],
   controllers: [AppController],
   providers: [
